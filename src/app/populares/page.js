@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Row, Col, Card, Button } from "react-bootstrap";
 import { FaPlusCircle, FaRegEdit } from "react-icons/fa";
@@ -7,18 +8,48 @@ import { MdDelete } from "react-icons/md";
 import Pagina from "@/app/components/Pagina";
 
 export default function Carros() {
-    const carros = JSON.parse(localStorage.getItem('carros')) || [];
+    const [carros, setCarros] = useState([]);
+
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const carrosLocalStorage = JSON.parse(localStorage.getItem('carros')) || [];
+            setCarros(carrosLocalStorage);
+        }
+    }, []);
+
+    const handleEdit = (carro) => {
+        if (typeof window !== 'undefined') {
+            localStorage.setItem('carroEdit', JSON.stringify(carro));
+            window.location.href = "/populares/form";
+        }
+    };
 
     const cardStyle = {
-        height: '350px',
+        height: '380px',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between'
     };
 
     const imageStyle = {
-        height: '150px',
+        height: '160px',
         objectFit: 'cover'
+    };
+
+    const motorStyle = {
+        fontSize: '0.75rem',
+        color: '#6c757d',
+    };
+
+    const valorStyle = {
+        fontSize: '1.0rem',
+        fontWeight: 'bold',
+        marginTop: 'auto'
+    };
+
+    const anoStyle = {
+        fontSize: '0.75rem',
+        color: '#6c757d',
     };
 
     return (
@@ -40,14 +71,18 @@ export default function Carros() {
                                 />
                                 <Card.Body>
                                     <Card.Title>{carro.nome}</Card.Title>
-                                    <Card.Text>
-                                        <strong>Portas:</strong> {carro.portas} <br />
-                                        <strong>Assentos:</strong> {carro.assentos} <br />
-                                        <strong>Direção:</strong> {carro.direcao}
+                                    <Card.Text style={motorStyle}>
+                                        {carro.motor}
+                                    </Card.Text>
+                                    <Card.Text style={valorStyle}>
+                                        R$ {carro.valor}
+                                    </Card.Text>
+                                    <Card.Text style={anoStyle}>
+                                        Ano: {carro.ano}
                                     </Card.Text>
                                 </Card.Body>
                                 <Card.Footer className="d-flex justify-content-between">
-                                    <Button variant="outline-primary" size="sm">
+                                    <Button variant="outline-primary" size="sm" onClick={() => handleEdit(carro)}>
                                         <FaRegEdit />
                                     </Button>
                                     <Button variant="outline-danger" size="sm">
@@ -64,3 +99,4 @@ export default function Carros() {
         </Pagina>
     );
 }
+
