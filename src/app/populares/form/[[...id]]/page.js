@@ -15,7 +15,7 @@ export default function CreateCarro() {
         const carros = JSON.parse(localStorage.getItem('carros')) || [];
         carros.push(dados);
         localStorage.setItem('carros', JSON.stringify(carros));
-        router.push('/carros');
+        router.push('/populares');
     }
 
     return (

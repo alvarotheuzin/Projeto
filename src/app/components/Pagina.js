@@ -1,10 +1,12 @@
 import { Container, Nav, NavDropdown, Navbar } from "react-bootstrap";
 import { FaUser } from "react-icons/fa";
+import '../styles/style.css';
+
 export default function Pagina(props) {
     return (
         <>
-            <Navbar bg="dark" variant="dark" expand="lg">
-                <Container>
+            <Navbar className="custom-navbar" expand="lg">
+                <Container fluid>
                     <Navbar.Brand href="/">Fundamentos</Navbar.Brand>
 
                     <Navbar.Toggle aria-controls="navbar-nav" />
@@ -39,13 +41,16 @@ export default function Pagina(props) {
                 </Container>
             </Navbar>
 
-            <div className="bg-secondary text-white text-center p-3">
-                <h1>{props.titulo}</h1>
-            </div>
-
             <Container className="my-3">
                 {props.children}
             </Container>
+
+            {/* Rodapé */}
+            <footer className="footer">
+                <Container>
+                    <p className="text-center">&copy; Álvaro</p>
+                </Container>
+            </footer>
         </>
     );
 }
