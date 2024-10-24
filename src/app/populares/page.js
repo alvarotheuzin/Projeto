@@ -11,18 +11,16 @@ export default function Carros() {
     const [carros, setCarros] = useState([]);
 
     useEffect(() => {
-        if (typeof window !== 'undefined') {
-            const carrosLocalStorage = JSON.parse(localStorage.getItem('carros')) || [];
-            setCarros(carrosLocalStorage);
-        }
+        setCarros(JSON.parse(localStorage.getItem('carros')) || []);
     }, []);
 
-    const handleEdit = (carro) => {
-        if (typeof window !== 'undefined') {
-            localStorage.setItem('carroEdit', JSON.stringify(carro));
-            window.location.href = "/populares/form";
+    function excluir(id) {
+        if (confirm('Deseja realmente excluir o registro?')) {
+            const dados = carros.filter(item => item.id !== id);
+            localStorage.setItem('carros', JSON.stringify(dados));
+            setCarros(dados);
         }
-    };
+    }
 
     const cardStyle = {
         height: '380px',
@@ -32,7 +30,7 @@ export default function Carros() {
         borderRadius: '10px',
         border: 'none',
         boxShadow: '0 4px 20px rgba(0, 0, 0, 0.1)',
-        transition: 'transform 0.2s ease', 
+        transition: 'transform 0.2s ease',
     };
 
     const cardHoverStyle = {
@@ -55,7 +53,6 @@ export default function Carros() {
         fontSize: '0.85rem',
         color: '#6c757d',
         textAlign: 'center',
-
     };
 
     const valorStyle = {
@@ -73,13 +70,13 @@ export default function Carros() {
 
             {carros.length > 0 ? (
                 <Row>
-                    {carros.map((carro, i) => (
-                        <Col key={i} sm={12} md={6} lg={4} xl={3} className="mb-4">
-                            <Card 
-                                style={cardStyle} 
+                    {carros.map((carro) => (
+                        <Col key={carro.id} sm={12} md={6} lg={4} xl={3} className="mb-4">
+                            <Card
+                                style={cardStyle}
                                 className="card-shadow"
                                 onMouseEnter={(e) => e.currentTarget.style.transform = cardHoverStyle.transform}
-                                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'} // Reset ao sair
+                                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
                             >
                                 <Card.Img
                                     variant="top"
@@ -100,10 +97,12 @@ export default function Carros() {
                                     </Card.Text>
                                 </Card.Body>
                                 <Card.Footer className="d-flex justify-content-between">
-                                    <Button variant="outline-primary" size="sm" onClick={() => handleEdit(carro)}>
-                                        <FaRegEdit title="Editar" className="text-primary" />
-                                    </Button>
-                                    <Button variant="outline-danger" size="sm">
+                                    <Link href={`/populares/form/${carro.id}`}>
+                                        <Button variant="outline-primary" size="sm">
+                                            <FaRegEdit title="Editar" className="text-primary" />
+                                        </Button>
+                                    </Link>
+                                    <Button variant="outline-danger" size="sm" onClick={() => excluir(carro.id)}>
                                         <MdDelete />
                                     </Button>
                                 </Card.Footer>

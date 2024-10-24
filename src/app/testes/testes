@@ -7,64 +7,102 @@ import { useRouter } from "next/navigation";
 import { Button, Form } from "react-bootstrap";
 import { FaCheck } from "react-icons/fa";
 import { MdOutlineArrowBack } from "react-icons/md";
-import { v4 } from "uuid";
 
-export default function Page({ params }) {
-    const router = useRouter();
+export default function page({ params }) {
 
-    const carros = JSON.parse(localStorage.getItem('carros')) || [];
-    const dados = carros.find(item => item.id === String(params.id));
-    const carro = dados || { nome: '', portas: '', assentos: '', direcao: '', cor: '', ano: '', imagemUrl: '', cambio: '', motor: '', valor: '' };
+    const router = useRouter()
+    
+    const carros = JSON.parse(localStorage.getItem('carros')) || []
+    const dados = carros.find(item => item.id == params.id)
+    const carro = dados || { nome: '', portas: '', assentos: '', direcao: '', cor: '', ano: '', imagemUrl: '', cambio: '' }
 
-    const tiposDirecao = ["Hidráulica", "Elétrica", "Mecânica", "Direção Assistida"];
+
+    /*const tiposDirecao = ["Hidráulica", "Elétrica", "Mecânica", "Direção Assistida"];
     const tiposCambio = ["Automático", "Manual"];
     const anosFabricacao = Array.from({ length: 50 }, (_, i) => new Date().getFullYear() - i);
 
     function salvar(dados) {
-        if (carro.id) {
-            const index = carros.findIndex(item => item.id === carro.id);
-            if (index !== -1) {
-                carros[index] = { ...carros[index], ...dados };
-            }
-        } else {
-            dados.id = v4();
-            carros.push(dados);
-        }
-
+        
+        carros.push(dados);
         localStorage.setItem('carros', JSON.stringify(carros));
         router.push('/populares');
+    }
+*/
+    function salvar(dados) {
+
+        if (carros.id) {
+            Object.assign(carro, dados)
+        } else {
+            dados.id = v4()
+            carros.push(dados)
+        }
+
+        localStorage.setItem('carros', JSON.stringify(carros))
+        return route.push('/populares')
+        
     }
 
     return (
         <Pagina titulo="Novo Carro">
+
             <Formik
                 initialValues={carro}
                 validate={values => {
                     const errors = {};
-                    if (!values.nome) errors.nome = 'Nome é obrigatório';
-                    if (!values.portas) errors.portas = 'Quantidade de portas é obrigatória';
-                    if (!values.assentos) errors.assentos = 'Quantidade de assentos é obrigatória';
-                    if (!values.direcao) errors.direcao = 'Tipo de direção é obrigatório';
-                    if (!values.cor) errors.cor = 'Cor é obrigatória';
-                    if (!values.ano) errors.ano = 'Ano de fabricação é obrigatório';
-                    if (!values.imagemUrl) errors.imagemUrl = 'Link da imagem é obrigatório';
-                    if (!values.cambio) errors.cambio = 'Tipo de câmbio é obrigatório';
-                    if (!values.motor) errors.motor = 'Tipo de motor é obrigatório';
-                    if (!values.valor) errors.valor = 'O valor do veículo é obrigatório';
+
+                    if (!values.nome) {
+                        errors.nome = 'Nome é obrigatório';
+                    }
+
+                    if (!values.portas) {
+                        errors.portas = 'Quantidade de portas é obrigatória';
+                    }
+
+                    if (!values.assentos) {
+                        errors.assentos = 'Quantidade de assentos é obrigatória';
+                    }
+
+                    if (!values.direcao) {
+                        errors.direcao = 'Tipo de direção é obrigatório';
+                    }
+
+                    if (!values.cor) {
+                        errors.cor = 'Cor é obrigatória';
+                    }
+
+                    if (!values.ano) {
+                        errors.ano = 'Ano de fabricação é obrigatório';
+                    }
+
+                    if (!values.imagemUrl) {
+                        errors.imagemUrl = 'Link da imagem é obrigatório';
+                    }
+
+                    if (!values.cambio) {
+                        errors.cambio = 'Tipo de câmbio é obrigatório';
+                    }
+                    if (!values.motor) {
+                        errors.motor = 'Tipo de motor é obrigatório';
+                    }
+                    if (!values.valor) {
+                        errors.valor = 'O valor do veículo é obrigatório';
+                    }
+
                     return errors;
                 }}
                 onSubmit={values => salvar(values)}
             >
                 {({ values, handleChange, handleSubmit, errors }) => (
-                    <Form onSubmit={handleSubmit}>
+
+                    <Form>
                         <Form.Group className="mb-4" controlId="nome">
                             <Form.Label>Nome</Form.Label>
                             <Form.Control
                                 type="text"
                                 name="nome"
                                 value={values.nome}
-                                onChange={handleChange}
-                                isInvalid={!!errors.nome}
+                                onChange={handleChange('nome')}
+                                isInvalid={errors.nome}
                             />
                             <Form.Control.Feedback type="invalid">
                                 {errors.nome}
@@ -77,8 +115,8 @@ export default function Page({ params }) {
                                 type="text"
                                 name="valor"
                                 value={values.valor}
-                                onChange={handleChange}
-                                isInvalid={!!errors.valor}
+                                onChange={handleChange('valor')}
+                                isInvalid={errors.valor}
                             />
                             <Form.Control.Feedback type="invalid">
                                 {errors.valor}
@@ -91,8 +129,8 @@ export default function Page({ params }) {
                                 type="text"
                                 name="imagemUrl"
                                 value={values.imagemUrl}
-                                onChange={handleChange}
-                                isInvalid={!!errors.imagemUrl}
+                                onChange={handleChange('imagemUrl')}
+                                isInvalid={errors.imagemUrl}
                             />
                             <Form.Control.Feedback type="invalid">
                                 {errors.imagemUrl}
@@ -105,8 +143,8 @@ export default function Page({ params }) {
                                 as="select"
                                 name="ano"
                                 value={values.ano}
-                                onChange={handleChange}
-                                isInvalid={!!errors.ano}
+                                onChange={handleChange('ano')}
+                                isInvalid={errors.ano}
                             >
                                 <option value="">Selecione o ano</option>
                                 {anosFabricacao.map((ano, index) => (
@@ -126,8 +164,8 @@ export default function Page({ params }) {
                                 as="select"
                                 name="direcao"
                                 value={values.direcao}
-                                onChange={handleChange}
-                                isInvalid={!!errors.direcao}
+                                onChange={handleChange('direcao')}
+                                isInvalid={errors.direcao}
                             >
                                 <option value="">Selecione o tipo de direção</option>
                                 {tiposDirecao.map((tipo, index) => (
@@ -147,10 +185,10 @@ export default function Page({ params }) {
                                 as="select"
                                 name="cambio"
                                 value={values.cambio}
-                                onChange={handleChange}
-                                isInvalid={!!errors.cambio}
+                                onChange={handleChange('cambio')}
+                                isInvalid={errors.cambio}
                             >
-                                <option value="">Selecione o tipo de câmbio</option>
+                                <option value="">Selecione o tipo de cambio</option>
                                 {tiposCambio.map((tipo, index) => (
                                     <option key={index} value={tipo}>
                                         {tipo}
@@ -168,8 +206,8 @@ export default function Page({ params }) {
                                 type="text"
                                 name="motor"
                                 value={values.motor}
-                                onChange={handleChange}
-                                isInvalid={!!errors.motor}
+                                onChange={handleChange('motor')}
+                                isInvalid={errors.motor}
                             />
                             <Form.Control.Feedback type="invalid">
                                 {errors.motor}
@@ -182,8 +220,8 @@ export default function Page({ params }) {
                                 type="text"
                                 name="cor"
                                 value={values.cor}
-                                onChange={handleChange}
-                                isInvalid={!!errors.cor}
+                                onChange={handleChange('cor')}
+                                isInvalid={errors.cor}
                             />
                             <Form.Control.Feedback type="invalid">
                                 {errors.cor}
@@ -196,16 +234,30 @@ export default function Page({ params }) {
                                 type="number"
                                 name="portas"
                                 value={values.portas}
-                                onChange={handleChange}
-                                isInvalid={!!errors.portas}
+                                onChange={handleChange('portas')}
+                                isInvalid={errors.portas}
                             />
                             <Form.Control.Feedback type="invalid">
                                 {errors.portas}
                             </Form.Control.Feedback>
                         </Form.Group>
 
+                        <Form.Group className="mb-4" controlId="assentos">
+                            <Form.Label>Quantidade de Assentos</Form.Label>
+                            <Form.Control
+                                type="number"
+                                name="assentos"
+                                value={values.assentos}
+                                onChange={handleChange('assentos')}
+                                isInvalid={errors.assentos}
+                            />
+                            <Form.Control.Feedback type="invalid">
+                                {errors.assentos}
+                            </Form.Control.Feedback>
+                        </Form.Group>
+
                         <div className="text-center">
-                            <Button type="submit" variant="success">
+                            <Button onClick={handleSubmit} variant="success">
                                 <FaCheck /> Salvar
                             </Button>
                             <Link href="/populares" className="btn btn-danger ms-2">
